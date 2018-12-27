@@ -26,7 +26,7 @@ def send_sql_command(func, keys, datas):
 
 
 def send_command_to_db_server(sql_command):
-    db_server_ip, db_server_port = '3.86.41.155', 10009
+    db_server_ip, db_server_port = '54.224.187.59', 10009
 
     response = None
 
