@@ -6,7 +6,7 @@ listener_name = 'Listener'
 queue_dir = '/queue/'
 topic_dir = '/topic/'
 
-ip = '3.16.206.199'
+ip = '3.86.41.155'
 port = 61613
 
 
