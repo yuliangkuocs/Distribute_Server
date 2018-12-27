@@ -44,7 +44,6 @@ if __name__ == '__main__':
     # Set up a socket
     server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_address = (ip, port)
-    server_sock.settimeout(3)
     print('Starting up on {} port {}'.format(*server_address))
     server_sock.bind(server_address)
     server_sock.listen(20)
