@@ -1,5 +1,6 @@
 type_enum = ['users', 'friends', 'invites', 'posts', 'joins', 'groups']
 
+
 class User:
     def __init__(self, guid=None, id=None, password=None, token=None, is_login=None, user_dict=None):
         self.guid = guid

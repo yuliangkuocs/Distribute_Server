@@ -26,7 +26,7 @@ def send_sql_command(func, keys, datas):
 
 
 def send_command_to_db_server(sql_command):
-    db_server_ip, db_server_port = '54.224.187.59', 10009
+    db_server_ip, db_server_port = '3.84.189.214', 10009
 
     response = None
 
@@ -52,7 +52,7 @@ def send_command_to_db_server(sql_command):
 def db_server_response_handler(db_server_response):
     try:
         if db_server_response['status'] == 0:
-            if db_server_response['type'] == 'Boolean':
+            if db_server_response['type'] == 'Boolean' or db_server_response['type'] == 'str':
                 return db_server_response['data'][0]
 
             elif db_server_response['type'] == 'users':

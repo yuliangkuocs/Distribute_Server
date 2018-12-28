@@ -31,6 +31,27 @@ commands = {'register': Command(0, 3, 'Usage: register <id> <password>', 'regist
             'list-joined': Command(24, 2, 'Usage: list-joined <user>', '')}
 
 
+# Update last login time of the user
+def update_user_last_login(token):
+    user = send_sql_command(func='select_user_by_token', keys=['token'], datas=[token])
+
+    if user and is_login(user[0]):
+        return {'status': 1, 'message': 'Not login yet'}
+
+    guid = user[0].guid
+
+    if send_sql_command(func='select_last_login_by_guid', keys=['guid'], datas=[guid]):
+        if send_sql_command(func='update_last_login',
+                            keys=['guid', 'last_login'],
+                            datas=[guid, str(int(time.time()))]) is False:
+            return {'status': 1, 'message': 'SQL Error'}
+    else:
+        if send_sql_command(func='insert_last_login',
+                            keys=['guid', 'last_login'],
+                            datas=[guid, str(int(time.time()))]) is False:
+            return {'status': 1, 'message': 'SQL Error'}
+
+
 # Command handle
 def command_handler(command):
     c_list = command.split()
@@ -42,76 +63,63 @@ def command_handler(command):
         return {'status': 1, 'message': 'Unknown command ' + c_list[0]}
 
     else:
-        # These commands don't have to replace id by token
+        # APP Server do not handle login, logout, register, delete
+        if 0 <= command.type_id <= 3:
+            return {'status': 1, 'message': 'APP Server does not deal \'{}\''.format(c_list[0])}
 
-        # register
-        if command == commands['register']:
-            return {'status': 1, 'message': 'APP Server does not deal \'register\''}
+        if len(c_list) < 2 or is_token(c_list[1]) is False:
+            return {'status': 1, 'message': 'Not login yet'}
 
-        # login
-        elif command == commands['login']:
-            return {'status': 1, 'message': 'APP Server does not deal \'login\''}
+        # Update the user last login time
+        update_user_last_login(c_list[1])
 
-        # These commands have to replace id by token
-        else:
-            if len(c_list) < 2 or is_token(c_list[1]) is False:
-                return {'status': 1, 'message': 'Not login yet'}
+        # invite
+        if command == commands['invite']:
+            result = invite(c_list)
 
-            # logout
-            if command == commands['logout']:
-                return {'status': 1, 'message': 'APP Server does not deal \'logout\''}
+        # accept-invite
+        elif command == commands['accept-invite']:
+            result = accept_invite(c_list)
 
-            # delete
-            elif command == commands['delete']:
-                return {'status': 1, 'message': 'APP Server does not deal \'delete\''}
+        # post
+        elif command == commands['post']:
+            result = post(c_list)
 
-            # invite
-            elif command == commands['invite']:
-                result = invite(c_list)
+        # receive-post
+        elif command == commands['receive-post']:
+            result = receive_post(c_list)
 
-            # accept-invite
-            elif command == commands['accept-invite']:
-                result = accept_invite(c_list)
+        # list-invite
+        elif command == commands['list-invite']:
+            result = list_invite(c_list)
 
-            # post
-            elif command == commands['post']:
-                result = post(c_list)
+        # list-friend
+        elif command == commands['list-friend']:
+            result = list_friend(c_list)
 
-            # receive-post
-            elif command == commands['receive-post']:
-                result = receive_post(c_list)
+        # create-group
+        elif command == commands['create-group']:
+            result = create_group(c_list)
 
-            # list-invite
-            elif command == commands['list-invite']:
-                result = list_invite(c_list)
+        # list-group
+        elif command == commands['list-group']:
+            result = list_group(c_list)
 
-            # list-friend
-            elif command == commands['list-friend']:
-                result = list_friend(c_list)
+        # list-joined
+        elif command == commands['list-joined']:
+            result = list_joined(c_list)
 
-            # create-group
-            elif command == commands['create-group']:
-                result = create_group(c_list)
+        # join-group
+        elif command == commands['join-group']:
+            result = join_group(c_list)
 
-            # list-group
-            elif command == commands['list-group']:
-                result = list_group(c_list)
+        # send
+        elif command == commands['send']:
+            result = send(c_list)
 
-            # list-joined
-            elif command == commands['list-joined']:
-                result = list_joined(c_list)
-
-            # join-group
-            elif command == commands['join-group']:
-                result = join_group(c_list)
-
-            # send
-            elif command == commands['send']:
-                result = send(c_list)
-
-            # send-group
-            elif command == commands['send-group']:
-                result = send_group(c_list)
+        # send-group
+        elif command == commands['send-group']:
+            result = send_group(c_list)
 
     return result
 

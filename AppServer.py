@@ -11,6 +11,7 @@ class ClientThread (threading.Thread):
         self.socket = socket
         self.addr = addr
         self.command = command
+        self.daemon = True
 
     def run(self):
         if self.command:
@@ -24,8 +25,6 @@ class ClientThread (threading.Thread):
 
             except socket.error as err:
                 print('[Socket ERROR] Send data to client socket fail:', err)
-            except socket.timeout as err:
-                print('[Socket ERROR] Send data to client socket timeout:', err)
             except Exception as err:
                 print('[Socket ERROR] Undefiend error:', err)
 
@@ -61,8 +60,6 @@ if __name__ == '__main__':
 
         except socket.error as err:
             print('[Socket ERROR] Receive data from client socket fail:', err)
-        except socket.timeout as err:
-            print('[Socket ERROR] Receive data from socket timeout:', err)
         except Exception as err:
             print('[Socket ERROR] Undefiend error:', err)
 
