@@ -38,7 +38,7 @@ def send_command_to_db_server(sql_command):
         s.settimeout(3)
         s.connect((db_server_ip, db_server_port))
         s.send(json.dumps(sql_command).encode())
-        response = json.loads(s.recv(4096).decode())
+        response = json.loads(s.recv(8192).decode())
         s.close()
 
     except Exception as e:
